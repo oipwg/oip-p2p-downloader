@@ -22,7 +22,7 @@ class Downloader {
         this._ipfs.start().then((api) => {
             console.log('post start')
             var _this = this
-            _this._ipfs.api.apiClient.swarm.connect('/ip4/100.67.96.46/tcp/4001/ipfs/QmZTFgNnrzUgoM9k464gotLLxnX72BLwvHR9goK9d9BtHm', function (err) {
+            _this._ipfs.api.apiClient.swarm.connect('', function (err) {
             console.log('post connect')    
             if (err) {
                   throw err
