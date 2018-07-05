@@ -7,6 +7,8 @@ import through2 from 'through2';
 import Observable from 'zen-observable';
 import { IpfsConnector } from '@akashaproject/ipfs-connector';
 import { OIPJS } from 'oip-js';
+import { Stream } from 'stream';
+import download from 'go-ipfs-dep';
 
 
 
@@ -18,9 +20,19 @@ class Downloader {
 
         
         this._ipfs.start().then((api) => {
-            this._ipfs_ready = true
+            console.log('post start')
+            var _this = this
+            _this._ipfs.api.apiClient.swarm.connect('/ip4/100.67.96.46/tcp/4001/ipfs/QmZTFgNnrzUgoM9k464gotLLxnX72BLwvHR9goK9d9BtHm', function (err) {
+            console.log('post connect')    
+            if (err) {
+                  throw err
+                }
+            
+               console.log('pre-ready') 
+               _this._ipfs_ready = true
+              })
         })
-        this._ipfs.REQUEST_TIMEOUT = 1 * 1000000000;
+        this._ipfs.REQUEST_TIMEOUT = 10000000000000;
     }
         
     shutdown() {
@@ -28,12 +40,15 @@ class Downloader {
     }
 
     download(artifact_ID, download_Location, filter_function){
+        console.log('ready')
         return new Promise((resolve, reject) => {
             var attemptDownload = () => {
+                console.log('delay?')
                 if (!this._ipfs_ready){
                     setTimeout(attemptDownload, 1000)
                     return
                 }
+                console.log('ready')
 
                 if (!artifact_ID)
                     reject(new Error("Artifact ID is undefined!"))
@@ -44,11 +59,6 @@ class Downloader {
 
                     var filesToDownload = artifact.getFiles();
 
-                    // for (var f in filesToDownload){
-                    //     this.downloadFile(filesToDownload[f]).then(() => {
-
-                    //     })
-                    // }
                     this.downloadFile(filesToDownload[0],download_Location).then((info) => {
                         console.log(info);
                     })
@@ -64,15 +74,35 @@ class Downloader {
     
     downloadFile(artifact_file, download_Location){
         return new Promise((resolve, reject) => {
-            resolve("")
+            // resolve("")
+            var downloadedBytes = 0
+            var totalBytes = 0
+            this._ipfs.api.apiClient.files.stat('/ipfs/'+'Qmc251CiKsYz74ho3wF9ituiAmUBt5QtEVjdvJSY32ETwa', (err, stats) => {
+                console.log(err)
+            totalBytes = stats.size;
+              var stream = this._ipfs.api.apiClient.files.catReadableStream('Qmc251CiKsYz74ho3wF9ituiAmUBt5QtEVjdvJSY32ETwa')
+            
+            
+            console.log("pre stream")
+            var ws = fs.createWriteStream('Ti_a4h_h4_170e13um18K_27nov07.mrc');
+            if (stream.readable) {
+                console.log("readable")
+                stream.on('error', (err) => {
+                        console.error(err)
+                    }).on('data', (data) => {
+                        downloadedBytes += data.length;
+                        
+                        console.log(downloadedBytes + '/' + totalBytes + " - " + Math.round(downloadedBytes/totalBytes*100000)/1000 + "%")
+                        ws.write(data);
+                    }).on('end', () => {
+                    console.log("end")
+                        ws.end();
+                    })
 
-            this._ipfs.api.getFile('zb2rhjDjm6tU24fwEnRSdVx6azrYUKjereY1c325VqR5vdaDQ').then((file => {
-                fs.writeFileSync('keyimg_ci2007-11-27-5_s.jpg', file );
-
-            } ))
-
+            }})
         })
     }
 }
+
 
 module.exports = Downloader;
