@@ -22,15 +22,15 @@ class Downloader {
         this._ipfs.start().then((api) => {
             console.log('post start')
             var _this = this
-            _this._ipfs.api.apiClient.swarm.connect('', function (err) {
-            console.log('post connect')    
-            if (err) {
-                  throw err
-                }
+            //_this._ipfs.api.apiClient.swarm.connect('', function (err) {
+           // console.log('post connect')    
+           // if (err) {
+             //     throw err
+             //   }
             
                console.log('pre-ready') 
                _this._ipfs_ready = true
-              })
+          //    })
         })
         this._ipfs.REQUEST_TIMEOUT = 10000000000000;
     }
