@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@akashaproject/ipfs-connector": "^1.10.28",
     "complex-filter": "^0.1.0",
-    "electron-download-manager": "^2.2.0",
     "filesize": "^3.6.1",
     "fs-extra": "^6.0.1",
     "go-ipfs-dep": "^0.4.15",
