@@ -3,7 +3,7 @@
 A tool for downloading directly off IPFS through OIP
 
 ``` Npm install ```
-``` Npm test ```
+``` Npm start ```
 
 
  inside App.js
