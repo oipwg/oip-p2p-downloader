@@ -73,6 +73,7 @@ class Downloader {
             }
 
             attemptDownload()
+            
         })
     }
        
@@ -82,8 +83,12 @@ class Downloader {
             var downloadedBytes = 0
             var totalBytes = 0
             this._ipfs.api.apiClient.files.stat(filePath, (err, stats) => {
+                if (err){ 
                 console.log(err)
-            // totalBytes = stats.size;
+                this.shutdown()
+            
+            return }
+            totalBytes = stats.size;
             console.log(filePath)
               var stream = this._ipfs.api.apiClient.files.catReadableStream(filePath)
               

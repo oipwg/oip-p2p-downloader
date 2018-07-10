@@ -9,11 +9,7 @@ var init = figlet.textSync(`OIP P2P Downloader`, {horizontalLayout: 'fitted'})
 console.log(chalk.grey(init))
 console.log(`\t\t\t\t\t\t\t  ${chalk.cyan("version " + pkjson.version)} ${chalk.hex("#FF6E1E")("by Anthony Howl from the OIPWG")}`)
 
-const store = this.__dirname + '/data';
-
-fs.ensureDir(store, err => {
-  console.log(err) // => null
-})
+const store = 'data';
 
 fs.ensureDir(store)
 .then(() => {
@@ -24,20 +20,9 @@ fs.ensureDir(store)
 })
 
 
-async function example (store) {
-  try {
-    await fs.ensureDir(store)
-    console.log('success!')
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-
-
 var dl = new Downloader()
 
-dl.download("e0113b", __dirname + '/data')
+dl.download("e0113b", 'data')
 
 
 
