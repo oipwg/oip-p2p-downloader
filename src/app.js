@@ -9,6 +9,8 @@ import { IpfsConnector } from '@akashaproject/ipfs-connector';
 import { OIPJS } from 'oip-js';
 import { Stream } from 'stream';
 import download from 'go-ipfs-dep';
+import Spinner from 'cli-spinners';
+import chalk from 'chalk';
 
 
 
@@ -22,15 +24,10 @@ class Downloader {
         this._ipfs.start().then((api) => {
             console.log('post start')
             var _this = this
-            //_this._ipfs.api.apiClient.swarm.connect('', function (err) {
-           // console.log('post connect')    
-           // if (err) {
-             //     throw err
-             //   }
-            
+
                console.log('pre-ready') 
                _this._ipfs_ready = true
-          //    })
+    
         })
         this._ipfs.REQUEST_TIMEOUT = 10000000000000;
     }
@@ -38,6 +35,7 @@ class Downloader {
     shutdown() {
         this._ipfs.stop();
     }
+
 
     download(artifact_ID, download_Location, filter_function){
         console.log('ready')
@@ -58,10 +56,16 @@ class Downloader {
                     console.log(artifact);
 
                     var filesToDownload = artifact.getFiles();
+                    var i = filesToDownload;
+                    for ( i = 0; i < filesToDownload.length; i++) { 
+                        var filePath = '/ipfs/' + (artifact.getLocation() + '/' + filesToDownload[i].getFilename());
 
-                    this.downloadFile(filesToDownload[0],download_Location).then((info) => {
-                        console.log(info);
-                    })
+                        this.downloadFile(filePath,download_Location + '/' + filesToDownload[i].getFilename()).then((info) => {
+                            console.log(info);
+                        })
+                    }
+                    
+                    
                     console.log(download_Location)
                 }, (error) => {
                     reject(error)
@@ -71,20 +75,22 @@ class Downloader {
             attemptDownload()
         })
     }
-    
-    downloadFile(artifact_file, download_Location){
+       
+    downloadFile(filePath, download_Location){
         return new Promise((resolve, reject) => {
-            // resolve("")
+           
             var downloadedBytes = 0
             var totalBytes = 0
-            this._ipfs.api.apiClient.files.stat('/ipfs/'+'Qmc251CiKsYz74ho3wF9ituiAmUBt5QtEVjdvJSY32ETwa', (err, stats) => {
+            this._ipfs.api.apiClient.files.stat(filePath, (err, stats) => {
                 console.log(err)
-            totalBytes = stats.size;
-              var stream = this._ipfs.api.apiClient.files.catReadableStream('Qmc251CiKsYz74ho3wF9ituiAmUBt5QtEVjdvJSY32ETwa')
+            // totalBytes = stats.size;
+            console.log(filePath)
+              var stream = this._ipfs.api.apiClient.files.catReadableStream(filePath)
+              
             
             
             console.log("pre stream")
-            var ws = fs.createWriteStream('Ti_a4h_h4_170e13um18K_27nov07.mrc');
+            var ws = fs.createWriteStream(download_Location);
             if (stream.readable) {
                 console.log("readable")
                 stream.on('error', (err) => {
