@@ -6,8 +6,8 @@ A tool for downloading directly off IPFS through OIP
 ``` Npm start ```
 
 
- inside App.js
+ inside Relay.js
                    
-   replace ``` Qmc251CiKsYz74ho3wF9ituiAmUBt5QtEVjdvJSY32ETwa ``` with whatever ipfs hash you require
+    dl.download("e0113b", __dirname + '/data') 
     
- make sure to change  ``` var ws = fs.createWriteStream('Ti_a4h_h4_170e13um18K_27nov07.mrc'); ``` to match the name of what is being downloaded
+   Change the artifact id to match the file you are retreiving, the use of OIP tools alongside the downloader may help alot
