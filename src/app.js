@@ -1,7 +1,7 @@
 'use strict'
 
-import fs from 'fs';
-import path from 'path'; 
+import fs from 'fs-extra';
+import path, { dirname } from 'path'; 
 import complexFilter from 'complex-filter';
 import through2 from 'through2';
 import Observable from 'zen-observable';
@@ -73,6 +73,7 @@ class Downloader {
             }
 
             attemptDownload()
+
             
         })
     }
@@ -95,11 +96,17 @@ class Downloader {
             
             
             console.log("pre stream")
+           var dir = path.parse(download_Location).dir
+
+            fs.ensureDir(dir).then(() => {
+                   console.log('success!')
+            
             var ws = fs.createWriteStream(download_Location);
+       
             if (stream.readable) {
                 console.log("readable")
                 stream.on('error', (err) => {
-                        console.error(err)
+                       // console.error(err)
                     }).on('data', (data) => {
                         downloadedBytes += data.length;
                         
@@ -109,8 +116,8 @@ class Downloader {
                     console.log("end")
                         ws.end();
                     })
-
             }})
+        })
         })
     }
 }

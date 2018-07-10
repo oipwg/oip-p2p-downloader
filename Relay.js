@@ -9,16 +9,6 @@ var init = figlet.textSync(`OIP P2P Downloader`, {horizontalLayout: 'fitted'})
 console.log(chalk.grey(init))
 console.log(`\t\t\t\t\t\t\t  ${chalk.cyan("version " + pkjson.version)} ${chalk.hex("#FF6E1E")("by Anthony Howl from the OIPWG")}`)
 
-const store = 'data';
-
-fs.ensureDir(store)
-.then(() => {
-  console.log('success!')
-})
-.catch(err => {
-  console.error(err)
-})
-
 
 var dl = new Downloader()
 
