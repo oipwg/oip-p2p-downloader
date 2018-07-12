@@ -29,7 +29,6 @@ class Downloader {
                _this._ipfs_ready = true
     
         })
-        this._ipfs.REQUEST_TIMEOUT = 10000000000000;
     }
         
     shutdown() {
